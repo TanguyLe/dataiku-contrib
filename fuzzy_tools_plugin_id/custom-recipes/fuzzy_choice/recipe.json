@@ -1,0 +1,139 @@
+// This file is the descriptor for the Custom code recipe fuzzy_filter
+{
+    // Meta data for display purposes
+    "meta" : {
+        "label" : "Fuzzy Choice",
+        "description" : "A fuzzy choice to pick the closest value within a list of possibilities",
+        "icon" : "icon-hand-up"
+    },
+
+    "kind" : "PYTHON",
+
+    // Inputs and outputs are defined by roles. In the recipe's I/O tab, the user can associate one
+    // or more dataset to each input and output role.
+
+    // The "arity" field indicates whether the user can associate several datasets to the role ('NARY')
+    // or at most one ('UNARY'). The "required" field indicates whether the user is allowed to
+    // associate no dataset with the role.
+
+    "inputRoles" : [
+        {
+            "name": "input_dataset",
+            "label": "Input Dataset",
+            "arity": "UNARY",
+            "required": true,
+            "acceptsDataset": true
+        },
+        {
+            "name": "values_dataset",
+            "label": "Values Dataset",
+            "arity": "UNARY",
+            "required": false,
+            "acceptsDataset": true
+        }
+    ],
+
+    "outputRoles" : [
+        {
+            "name": "output_dataset",
+            "label": "Output Dataset",
+            "arity": "UNARY",
+            "required": true,
+            "acceptsDataset": true
+        }
+    ],
+
+    // The field "params" holds a list of all the params
+    // for wich the user will be prompted for values in the Settings tab of the recipe.
+
+    // The available parameter types are:
+    // STRING, INT, DOUBLE, BOOLEAN, PASSWORD, SELECT, MAP, COLUMN, COLUMNS, TEXTAREA
+
+    "params": [
+        {
+            "name": "target_col",
+            "label" : "Column to filter from",
+            "description":"The column which values will be used to make a choice.",
+            "type": "COLUMN",
+            "mandatory" : true,
+            "columnRole":"input_dataset"
+        },
+        {
+            "name": "values",
+            "label" : "Values to choose from",
+            "type": "TEXTAREA",
+            "description":"The list of string values to choose from, must be separated by commas. You can leave it empty if you only use values from a dataset.",
+            "mandatory" : true
+        },
+        
+        {
+            "name": "values_colname",
+            "label" : "Col name from values dataset",
+            "type": "COLUMN",
+            "description":"Column name to choose from. Values will be picked from that column in the values dataset. The values are added to the ones in the above field. You can leave it empty if you only use values from the list.",
+            "mandatory" : false,
+            "columnRole":"values_dataset"
+        },
+        {
+            "name": "nb_choices",
+            "label" : "Number of choices",
+            "type": "INT",
+            "description":"Number of choices to keep, must be equal or inferior to the number of values to choose from.",
+            "defaultValue": 1,
+            "mandatory" : true
+        },
+        {
+            "name": "thresh",
+            "label": "Confidence threshold",
+            "type": "DOUBLE",
+            "description":"The threshold value. If no choice is found with a confidence above the thresh, returns an empty cell.",
+            "mandatory": false,
+            "defaultValue" : 50
+        },
+        {
+            "name": "ratio_type",
+            "label": "Ratio type",
+            "type": "SELECT",
+            "description":"The type of ratio used, default is the simple ratio.",
+            "defaultValue" : "ratio",
+            "selectChoices": [
+                {
+                    "value": "ratio",
+                    "label": "Simple Ratio"
+                },
+                {
+                    "value": "partial_ratio",
+                    "label": "Partial Ratio"
+                },
+                {
+                    "value": "token_sort_ratio",
+                    "label": "Token Sort Ratio"
+                },
+                {
+                    "value": "token_set_ratio",
+                    "label": "Token Set Ratio"
+                }
+        
+            ],
+            "mandatory" : true
+        },
+        {
+            "name": "ratios",
+            "label": "Extract Ratios",
+            "type": "BOOLEAN",
+            "description":"Whether to extract or not the ratio values.",
+            "mandatory": true,
+            "defaultValue" : false
+        }
+        
+    ],
+
+    // The field "resourceKeys" holds a list of keys that allows to limit the number
+    // of concurrent executions and activities triggered by this recipe.
+    //
+    // Administrators can configure the limit per resource key in the Administration > Settings > Flow build
+    // screen.
+
+    "resourceKeys" : []
+
+}
